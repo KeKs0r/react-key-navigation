@@ -1,35 +1,38 @@
-import Focusable from './Focusable.jsx';
+import Focusable from "./Focusable.jsx";
 
 class VerticalList extends Focusable {
   isContainer() {
     return true;
   }
-  
-  getNextFocus(direction, focusedIndex) {
-    const remainInFocus = this.props.remainInFocus ? this.props.remainInFocus : false;
 
-    if (direction !== 'up' && direction !== 'down') {
-      if (remainInFocus)
-        return null;
+  getNextFocus(direction, focusedIndex) {
+    const remainInFocus = this.props.remainInFocus
+      ? this.props.remainInFocus
+      : false;
+
+    if (direction !== "up" && direction !== "down") {
+      if (remainInFocus) return null;
       return super.getNextFocus(direction, this.indexInParent);
     }
 
     let nextFocus = null;
-    if (direction === 'up') {
+    if (direction === "up") {
       nextFocus = this.previousChild(focusedIndex);
-    } else if (direction === 'down') {
+    } else if (direction === "down") {
       nextFocus = this.nextChild(focusedIndex);
     }
 
     if (!nextFocus) {
+      if (this.props.lockFocus) {
+        return null;
+      }
       return super.getNextFocus(direction, this.indexInParent);
     }
 
     if (nextFocus.isContainer()) {
       if (nextFocus.hasChildren()) {
         return nextFocus.getDefaultFocus();
-      }
-      else {
+      } else {
         return this.getNextFocus(direction, nextFocus.indexInParent);
       }
     }
