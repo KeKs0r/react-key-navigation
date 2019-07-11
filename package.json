@@ -51,5 +51,7 @@
     "react-scripts": "^3.0.1",
     "webpack": "^2.6.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-focus-lock": "^2.0.3"
+  }
 }
