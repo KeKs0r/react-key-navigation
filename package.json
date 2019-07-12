@@ -48,10 +48,9 @@
     "prop-types": "^15.6.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-focus-lock": "^2.0.3",
     "react-scripts": "^3.0.1",
     "webpack": "^2.6.1"
   },
-  "dependencies": {
-    "react-focus-lock": "^2.0.3"
-  }
+  "dependencies": {}
 }
