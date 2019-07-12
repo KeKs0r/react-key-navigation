@@ -310,32 +310,35 @@ var Focusable = function (_Component) {
   }
 
   _createClass(Focusable, [{
-    key: 'isContainer',
+    key: "isContainer",
     value: function isContainer() {
       return false;
     }
   }, {
-    key: 'hasChildren',
+    key: "hasChildren",
     value: function hasChildren() {
       return this.children.length > 0;
     }
   }, {
-    key: 'getParent',
+    key: "getParent",
     value: function getParent() {
       return this.context.parentFocusable;
     }
   }, {
-    key: 'addChild',
+    key: "addChild",
     value: function addChild(child) {
       this.children.push(child);
       return this.children.length - 1;
     }
   }, {
-    key: 'removeChild',
+    key: "removeChild",
     value: function removeChild(child) {
       this.context.navigationComponent.removeFocusableId(child.focusableId);
+      this.children = this.children.filter(function (c) {
+        return c !== child;
+      });
 
-      var currentFocusedPath = this.context.navigationComponent.currentFocusedPath;
+      var currentFocusedPath = this.getNavigator().currentFocusedPath;
       if (!currentFocusedPath) {
         return;
       }
@@ -346,7 +349,7 @@ var Focusable = function (_Component) {
       }
     }
   }, {
-    key: 'getDefaultChild',
+    key: "getDefaultChild",
     value: function getDefaultChild() {
       if (this.lastFocusChild && this.props.retainLastFocus) {
         return this.lastFocusChild;
@@ -355,12 +358,12 @@ var Focusable = function (_Component) {
       return 0;
     }
   }, {
-    key: 'getNextFocusFrom',
+    key: "getNextFocusFrom",
     value: function getNextFocusFrom(direction) {
       return this.getNextFocus(direction, this.indexInParent);
     }
   }, {
-    key: 'getNextFocus',
+    key: "getNextFocus",
     value: function getNextFocus(direction, focusedIndex) {
       if (!this.getParent()) {
         return null;
@@ -369,7 +372,7 @@ var Focusable = function (_Component) {
       return this.getParent().getNextFocus(direction, focusedIndex);
     }
   }, {
-    key: 'getDefaultFocus',
+    key: "getDefaultFocus",
     value: function getDefaultFocus() {
       if (this.isContainer()) {
         if (this.hasChildren()) {
@@ -382,7 +385,7 @@ var Focusable = function (_Component) {
       return this;
     }
   }, {
-    key: 'buildTreePath',
+    key: "buildTreePath",
     value: function buildTreePath() {
       this.treePath.unshift(this);
 
@@ -393,7 +396,7 @@ var Focusable = function (_Component) {
       }
     }
   }, {
-    key: 'focus',
+    key: "focus",
     value: function focus() {
       var _this2 = this;
 
@@ -402,14 +405,14 @@ var Focusable = function (_Component) {
       });
     }
   }, {
-    key: 'blur',
+    key: "blur",
     value: function blur() {
       if (this.props.onBlur) {
         this.props.onBlur(this.indexInParent, this.context.navigationComponent);
       }
     }
   }, {
-    key: 'nextChild',
+    key: "nextChild",
     value: function nextChild(focusedIndex) {
       if (this.children.length === focusedIndex + 1) {
         return null;
@@ -418,7 +421,7 @@ var Focusable = function (_Component) {
       return this.children[focusedIndex + 1];
     }
   }, {
-    key: 'previousChild',
+    key: "previousChild",
     value: function previousChild(focusedIndex) {
       if (focusedIndex - 1 < 0) {
         return null;
@@ -427,7 +430,7 @@ var Focusable = function (_Component) {
       return this.children[focusedIndex - 1];
     }
   }, {
-    key: 'getNavigator',
+    key: "getNavigator",
     value: function getNavigator() {
       return this.context.navigationComponent;
     }
@@ -435,12 +438,12 @@ var Focusable = function (_Component) {
     // React Methods
 
   }, {
-    key: 'getChildContext',
+    key: "getChildContext",
     value: function getChildContext() {
       return { parentFocusable: this };
     }
   }, {
-    key: 'componentDidMount',
+    key: "componentDidMount",
     value: function componentDidMount() {
       this.focusableId = this.context.navigationComponent.addComponent(this, this.props.focusId);
 
@@ -458,16 +461,17 @@ var Focusable = function (_Component) {
       }
     }
   }, {
-    key: 'componentWillUnmount',
+    key: "componentWillUnmount",
     value: function componentWillUnmount() {
-      if (this.context.parentFocusable) {
-        this.getParent().removeChild(this);
+      var parent = this.getParent();
+      if (parent) {
+        parent.removeChild(this);
       }
 
       this.focusableId = null;
     }
   }, {
-    key: 'componentDidUpdate',
+    key: "componentDidUpdate",
     value: function componentDidUpdate() {
       var parent = this.getParent();
       if (parent && parent.updateChildrenOrder) {
@@ -487,7 +491,7 @@ var Focusable = function (_Component) {
       this.updateChildrenOrder = false;
     }
   }, {
-    key: 'render',
+    key: "render",
     value: function render() {
       var _props = this.props,
           focusId = _props.focusId,
@@ -498,14 +502,15 @@ var Focusable = function (_Component) {
           onFocus = _props.onFocus,
           onBlur = _props.onBlur,
           onEnterDown = _props.onEnterDown,
-          props = _objectWithoutProperties(_props, ['focusId', 'rootNode', 'navDefault', 'forceFocus', 'retainLastFocus', 'onFocus', 'onBlur', 'onEnterDown']);
+          lockFocus = _props.lockFocus,
+          props = _objectWithoutProperties(_props, ["focusId", "rootNode", "navDefault", "forceFocus", "retainLastFocus", "onFocus", "onBlur", "onEnterDown", "lockFocus"]);
 
       if (this.children.length > 0) {
         this.updateChildrenOrder = true;
         this.updateChildrenOrderNum = 0;
       }
 
-      return _react2.default.createElement('span', props);
+      return _react2.default.createElement("span", props);
     }
   }]);
 
@@ -528,7 +533,8 @@ Focusable.defaultProps = {
   retainLastFocus: false,
   onFocus: _propTypes2.default.function,
   onBlur: _propTypes2.default.function,
-  onEnterDown: _propTypes2.default.function
+  onEnterDown: _propTypes2.default.function,
+  onChildrenEscapeDown: _propTypes2.default.function
 };
 
 exports.default = Focusable;
@@ -696,29 +702,32 @@ var VerticalList = function (_Focusable) {
   }
 
   _createClass(VerticalList, [{
-    key: 'isContainer',
+    key: "isContainer",
     value: function isContainer() {
       return true;
     }
   }, {
-    key: 'getNextFocus',
+    key: "getNextFocus",
     value: function getNextFocus(direction, focusedIndex) {
       var remainInFocus = this.props.remainInFocus ? this.props.remainInFocus : false;
 
-      if (direction !== 'up' && direction !== 'down') {
+      if (direction !== "up" && direction !== "down") {
         if (remainInFocus) return null;
-        return _get(VerticalList.prototype.__proto__ || Object.getPrototypeOf(VerticalList.prototype), 'getNextFocus', this).call(this, direction, this.indexInParent);
+        return _get(VerticalList.prototype.__proto__ || Object.getPrototypeOf(VerticalList.prototype), "getNextFocus", this).call(this, direction, this.indexInParent);
       }
 
       var nextFocus = null;
-      if (direction === 'up') {
+      if (direction === "up") {
         nextFocus = this.previousChild(focusedIndex);
-      } else if (direction === 'down') {
+      } else if (direction === "down") {
         nextFocus = this.nextChild(focusedIndex);
       }
 
       if (!nextFocus) {
-        return _get(VerticalList.prototype.__proto__ || Object.getPrototypeOf(VerticalList.prototype), 'getNextFocus', this).call(this, direction, this.indexInParent);
+        if (this.props.lockFocus) {
+          return null;
+        }
+        return _get(VerticalList.prototype.__proto__ || Object.getPrototypeOf(VerticalList.prototype), "getNextFocus", this).call(this, direction, this.indexInParent);
       }
 
       if (nextFocus.isContainer()) {
@@ -946,16 +955,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var reverseDirection = {
-  'up': 'down',
-  'down': 'up',
-  'left': 'right',
-  'right': 'left'
-
-  /*
-  This component listen the window keys events.
-  */
-
+  up: "down",
+  down: "up",
+  left: "right",
+  right: "left"
 };
+
+/*
+This component listen the window keys events.
+*/
+
 var Navigation = function (_Component) {
   _inherits(Navigation, _Component);
 
@@ -983,12 +992,16 @@ var Navigation = function (_Component) {
 
       var direction = _this.props.keyMapping[evt.keyCode];
 
-      if (!direction) {
-        if (evt.keyCode === _this.props.keyMapping['enter']) {
-          if (_this.currentFocusedPath) {
-            if (!_this.fireEvent(_this.getLastFromPath(_this.currentFocusedPath), 'enter-down')) {
-              return preventDefault();
-            }
+      if (!direction && _this.currentFocusedPath) {
+        if (evt.keyCode === _this.props.keyMapping["enter"]) {
+          if (!_this.fireEvent(_this.getLastFromPath(_this.currentFocusedPath), "enter-down")) {
+            return preventDefault();
+          }
+        } else if (evt.keyCode === _this.props.keyMapping["escape"]) {
+          var currentElement = _this.getLastFromPath(_this.currentFocusedPath);
+          var parentFocusable = currentElement.context.parentFocusable;
+          if (parentFocusable && !_this.fireEvent(parentFocusable, "escape-down", evt)) {
+            return preventDefault();
           }
         }
         return;
@@ -1012,20 +1025,23 @@ var Navigation = function (_Component) {
   }
 
   _createClass(Navigation, [{
-    key: 'fireEvent',
+    key: "fireEvent",
     value: function fireEvent(element, evt, evtProps) {
       switch (evt) {
-        case 'willmove':
+        case "willmove":
           if (element.props.onWillMove) element.props.onWillMove(evtProps);
           break;
-        case 'onfocus':
+        case "onfocus":
           element.focus(evtProps);
           break;
-        case 'onblur':
+        case "onblur":
           element.blur(evtProps);
           break;
-        case 'enter-down':
+        case "enter-down":
           if (element.props.onEnterDown) element.props.onEnterDown(evtProps, this);
+          break;
+        case "escape-down":
+          if (element.props.onChildrenEscapeDown) element.props.onChildrenEscapeDown(evtProps, this);
           break;
         default:
           return false;
@@ -1034,7 +1050,7 @@ var Navigation = function (_Component) {
       return true;
     }
   }, {
-    key: 'focusNext',
+    key: "focusNext",
     value: function focusNext(direction, focusedPath) {
       var next = this.getLastFromPath(focusedPath).getNextFocusFrom(direction);
 
@@ -1044,7 +1060,7 @@ var Navigation = function (_Component) {
       }
     }
   }, {
-    key: 'blur',
+    key: "blur",
     value: function blur(nextTree) {
       if (this.currentFocusedPath === null) return;
 
@@ -1072,10 +1088,10 @@ var Navigation = function (_Component) {
       }
     }
   }, {
-    key: 'focus',
+    key: "focus",
     value: function focus(next) {
       if (next === null) {
-        console.warn('Trying to focus a null component');
+        console.warn("Trying to focus a null component");
         return;
       }
 
@@ -1087,12 +1103,12 @@ var Navigation = function (_Component) {
       this.lastFocusedPath = lastPath;
     }
   }, {
-    key: 'getLastFromPath',
+    key: "getLastFromPath",
     value: function getLastFromPath(path) {
       return path[path.length - 1];
     }
   }, {
-    key: 'focusDefault',
+    key: "focusDefault",
     value: function focusDefault() {
       if (this.default !== null) {
         this.focus(this.default.getDefaultFocus());
@@ -1101,12 +1117,12 @@ var Navigation = function (_Component) {
       }
     }
   }, {
-    key: 'setDefault',
+    key: "setDefault",
     value: function setDefault(component) {
       this.default = component;
     }
   }, {
-    key: 'addComponent',
+    key: "addComponent",
     value: function addComponent(component) {
       var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
@@ -1116,23 +1132,23 @@ var Navigation = function (_Component) {
       }
 
       if (!id) {
-        id = 'focusable-' + this.focusableIds++;
+        id = "focusable-" + this.focusableIds++;
       }
 
       this.focusableComponents[id] = component;
       return id;
     }
   }, {
-    key: 'forceFocus',
+    key: "forceFocus",
     value: function forceFocus(focusableId) {
       if (!this.focusableComponents[focusableId]) {
-        throw new Error('Focusable component with id "' + focusableId + '" doesn\'t exists!');
+        throw new Error('Focusable component with id "' + focusableId + "\" doesn't exists!");
       }
 
       this.focus(this.focusableComponents[focusableId].getDefaultFocus());
     }
   }, {
-    key: 'removeFocusableId',
+    key: "removeFocusableId",
     value: function removeFocusableId(focusableId) {
       if (this.focusableComponents[focusableId]) delete this.focusableComponents[focusableId];
     }
@@ -1140,38 +1156,45 @@ var Navigation = function (_Component) {
     // React Functions
 
   }, {
-    key: 'componentDidMount',
+    key: "componentDidMount",
     value: function componentDidMount() {
-      window.addEventListener('keydown', this.onKeyDown);
-      window.addEventListener('keyup', this.onKeyUp);
+      window.addEventListener("keydown", this.onKeyDown);
+      window.addEventListener("keyup", this.onKeyUp);
       this.focusDefault();
     }
   }, {
-    key: 'componentWillUnmount',
+    key: "componentWillUnmount",
     value: function componentWillUnmount() {
-      window.removeEventListener('keyup', this.onKeyUp);
-      window.removeEventListener('keydown', this.onKeyDown);
+      window.removeEventListener("keyup", this.onKeyUp);
+      window.removeEventListener("keydown", this.onKeyDown);
     }
   }, {
-    key: 'getChildContext',
+    key: "getChildContext",
     value: function getChildContext() {
       return { navigationComponent: this };
     }
   }, {
-    key: 'getRoot',
+    key: "getRoot",
     value: function getRoot() {
       return this.root;
     }
   }, {
-    key: 'render',
+    key: "render",
     value: function render() {
       var _this2 = this;
 
       return _react2.default.createElement(
         _VerticalList2.default,
-        { ref: function ref(element) {
-            return _this2.root = element;
-          }, focusId: 'navigation' },
+        {
+          ref: function ref(element) {
+            _this2.root = element;
+            if (element && element.context) {
+              console.log("Setting the root");
+              window.navigationRoot = element.context.navigationComponent;
+            }
+          },
+          focusId: "navigation"
+        },
         this.props.children
       );
     }
@@ -1182,11 +1205,12 @@ var Navigation = function (_Component) {
 
 Navigation.defaultProps = {
   keyMapping: {
-    '37': 'left',
-    '38': 'up',
-    '39': 'right',
-    '40': 'down',
-    'enter': 13
+    "37": "left",
+    "38": "up",
+    "39": "right",
+    "40": "down",
+    enter: 13,
+    escape: 27
   }
 };
 
