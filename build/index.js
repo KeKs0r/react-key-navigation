@@ -619,29 +619,29 @@ var HorizontalList = function (_Focusable) {
   }
 
   _createClass(HorizontalList, [{
-    key: 'isContainer',
+    key: "isContainer",
     value: function isContainer() {
       return true;
     }
   }, {
-    key: 'getNextFocus',
+    key: "getNextFocus",
     value: function getNextFocus(direction, focusedIndex) {
       var remainInFocus = this.props.remainInFocus ? this.props.remainInFocus : false;
 
-      if (direction !== 'left' && direction !== 'right') {
+      if (direction !== "left" && direction !== "right") {
         if (remainInFocus) return null;
-        return _get(HorizontalList.prototype.__proto__ || Object.getPrototypeOf(HorizontalList.prototype), 'getNextFocus', this).call(this, direction, this.indexInParent);
+        return _get(HorizontalList.prototype.__proto__ || Object.getPrototypeOf(HorizontalList.prototype), "getNextFocus", this).call(this, direction, this.indexInParent);
       }
 
       var nextFocus = null;
-      if (direction === 'left') {
+      if (direction === "left") {
         nextFocus = this.previousChild(focusedIndex);
-      } else if (direction === 'right') {
+      } else if (direction === "right") {
         nextFocus = this.nextChild(focusedIndex);
       }
 
       if (!nextFocus) {
-        return _get(HorizontalList.prototype.__proto__ || Object.getPrototypeOf(HorizontalList.prototype), 'getNextFocus', this).call(this, direction, this.indexInParent);
+        return _get(HorizontalList.prototype.__proto__ || Object.getPrototypeOf(HorizontalList.prototype), "getNextFocus", this).call(this, direction, this.indexInParent);
       }
 
       if (nextFocus.isContainer()) {
@@ -655,7 +655,7 @@ var HorizontalList = function (_Focusable) {
       return nextFocus;
     }
   }, {
-    key: 'render',
+    key: "render",
     value: function render() {
       var _props = this.props,
           focusId = _props.focusId,
@@ -666,9 +666,12 @@ var HorizontalList = function (_Focusable) {
           onFocus = _props.onFocus,
           onBlur = _props.onBlur,
           onEnterDown = _props.onEnterDown,
-          props = _objectWithoutProperties(_props, ['focusId', 'rootNode', 'navDefault', 'forceFocus', 'retainLastFocus', 'onFocus', 'onBlur', 'onEnterDown']);
+          onChildrenEscapeDown = _props.onChildrenEscapeDown,
+          lockFocus = _props.lockFocus,
+          disableFocus = _props.disableFocus,
+          props = _objectWithoutProperties(_props, ["focusId", "rootNode", "navDefault", "forceFocus", "retainLastFocus", "onFocus", "onBlur", "onEnterDown", "onChildrenEscapeDown", "lockFocus", "disableFocus"]);
 
-      return _react2.default.createElement('div', props);
+      return _react2.default.createElement("div", props);
     }
   }]);
 
