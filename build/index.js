@@ -417,8 +417,13 @@ var Focusable = function (_Component) {
       if (this.children.length === focusedIndex + 1) {
         return null;
       }
+      var current = this.children[focusedIndex];
+      var activeChildren = this.children.filter(function (c) {
+        return !c.props.disableFocus;
+      });
+      var activeIndex = activeChildren.indexOf(current);
 
-      return this.children[focusedIndex + 1];
+      return activeChildren[activeIndex + 1];
     }
   }, {
     key: "previousChild",
@@ -426,8 +431,13 @@ var Focusable = function (_Component) {
       if (focusedIndex - 1 < 0) {
         return null;
       }
+      var current = this.children[focusedIndex];
+      var activeChildren = this.children.filter(function (c) {
+        return !c.props.disableFocus;
+      });
+      var activeIndex = activeChildren.indexOf(current);
 
-      return this.children[focusedIndex - 1];
+      return activeChildren[activeIndex - 1];
     }
   }, {
     key: "getNavigator",
@@ -504,7 +514,8 @@ var Focusable = function (_Component) {
           onEnterDown = _props.onEnterDown,
           onChildrenEscapeDown = _props.onChildrenEscapeDown,
           lockFocus = _props.lockFocus,
-          props = _objectWithoutProperties(_props, ["focusId", "rootNode", "navDefault", "forceFocus", "retainLastFocus", "onFocus", "onBlur", "onEnterDown", "onChildrenEscapeDown", "lockFocus"]);
+          disableFocus = _props.disableFocus,
+          props = _objectWithoutProperties(_props, ["focusId", "rootNode", "navDefault", "forceFocus", "retainLastFocus", "onFocus", "onBlur", "onEnterDown", "onChildrenEscapeDown", "lockFocus", "disableFocus"]);
 
       if (this.children.length > 0) {
         this.updateChildrenOrder = true;
