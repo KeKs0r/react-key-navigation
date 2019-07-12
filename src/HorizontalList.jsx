@@ -1,5 +1,5 @@
-import React from 'react';
-import Focusable from './Focusable.jsx';
+import React from "react";
+import Focusable from "./Focusable.jsx";
 
 class HorizontalList extends Focusable {
   isContainer() {
@@ -7,18 +7,19 @@ class HorizontalList extends Focusable {
   }
 
   getNextFocus(direction, focusedIndex) {
-    const remainInFocus = this.props.remainInFocus ? this.props.remainInFocus : false;
+    const remainInFocus = this.props.remainInFocus
+      ? this.props.remainInFocus
+      : false;
 
-    if (direction !== 'left' && direction !== 'right') {
-      if (remainInFocus)
-        return null;
+    if (direction !== "left" && direction !== "right") {
+      if (remainInFocus) return null;
       return super.getNextFocus(direction, this.indexInParent);
     }
 
     let nextFocus = null;
-    if (direction === 'left') {
+    if (direction === "left") {
       nextFocus = this.previousChild(focusedIndex);
-    } else if (direction === 'right') {
+    } else if (direction === "right") {
       nextFocus = this.nextChild(focusedIndex);
     }
 
@@ -29,8 +30,7 @@ class HorizontalList extends Focusable {
     if (nextFocus.isContainer()) {
       if (nextFocus.hasChildren()) {
         return nextFocus.getDefaultFocus();
-      }
-      else {
+      } else {
         return this.getNextFocus(direction, nextFocus.indexInParent);
       }
     }
@@ -39,8 +39,21 @@ class HorizontalList extends Focusable {
   }
 
   render() {
-    const { focusId, rootNode, navDefault, forceFocus, retainLastFocus, onFocus, onBlur, onEnterDown, ...props } = this.props;
-    return <div {...props} />
+    const {
+      focusId,
+      rootNode,
+      navDefault,
+      forceFocus,
+      retainLastFocus,
+      onFocus,
+      onBlur,
+      onEnterDown,
+      onChildrenEscapeDown,
+      lockFocus,
+      disableFocus,
+      ...props
+    } = this.props;
+    return <div {...props} />;
   }
 }
 
