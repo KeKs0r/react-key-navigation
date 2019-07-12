@@ -213,8 +213,24 @@ function NestedLockFormDemo() {
   );
 }
 
+function DisabledElementsDemo() {
+  return (
+    <Navigation>
+      <VerticalList style={{ display: "flex", flexDirection: "column" }}>
+        <FocusComponent>First</FocusComponent>
+        <FocusComponent>Second</FocusComponent>
+        <FocusComponent disableFocus>Disabled</FocusComponent>
+        <FocusComponent>Forth</FocusComponent>
+        <FocusComponent>Fifth</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+      </VerticalList>
+    </Navigation>
+  );
+}
+
 storiesOf("Focus", module)
   .add("List Demo", () => <ListDemo />)
+  .add("Disabled Demo", () => <DisabledElementsDemo />)
   .add("Nested Demo", () => <NestedDemo />)
   .add("Nested Lock Demo", () => <NestedLockDemo />)
   .add("Nested Lock Form", () => <NestedLockFormDemo />);
