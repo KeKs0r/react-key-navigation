@@ -502,8 +502,9 @@ var Focusable = function (_Component) {
           onFocus = _props.onFocus,
           onBlur = _props.onBlur,
           onEnterDown = _props.onEnterDown,
+          onChildrenEscapeDown = _props.onChildrenEscapeDown,
           lockFocus = _props.lockFocus,
-          props = _objectWithoutProperties(_props, ["focusId", "rootNode", "navDefault", "forceFocus", "retainLastFocus", "onFocus", "onBlur", "onEnterDown", "lockFocus"]);
+          props = _objectWithoutProperties(_props, ["focusId", "rootNode", "navDefault", "forceFocus", "retainLastFocus", "onFocus", "onBlur", "onEnterDown", "onChildrenEscapeDown", "lockFocus"]);
 
       if (this.children.length > 0) {
         this.updateChildrenOrder = true;
