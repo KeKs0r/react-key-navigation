@@ -112,16 +112,22 @@ class Focusable extends Component {
     if (this.children.length === focusedIndex + 1) {
       return null;
     }
+    const current = this.children[focusedIndex];
+    const activeChildren = this.children.filter(c => !c.props.disableFocus);
+    const activeIndex = activeChildren.indexOf(current);
 
-    return this.children[focusedIndex + 1];
+    return activeChildren[activeIndex + 1];
   }
 
   previousChild(focusedIndex) {
     if (focusedIndex - 1 < 0) {
       return null;
     }
+    const current = this.children[focusedIndex];
+    const activeChildren = this.children.filter(c => !c.props.disableFocus);
+    const activeIndex = activeChildren.indexOf(current);
 
-    return this.children[focusedIndex - 1];
+    return activeChildren[activeIndex - 1];
   }
 
   getNavigator() {
@@ -195,6 +201,7 @@ class Focusable extends Component {
       onEnterDown,
       onChildrenEscapeDown,
       lockFocus,
+      disableFocus,
       ...props
     } = this.props;
 
