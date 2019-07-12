@@ -193,6 +193,7 @@ class Focusable extends Component {
       onFocus,
       onBlur,
       onEnterDown,
+      onChildrenEscapeDown,
       lockFocus,
       ...props
     } = this.props;
