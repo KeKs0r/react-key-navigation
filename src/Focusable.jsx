@@ -208,6 +208,7 @@ class Focusable extends Component {
       onChildrenEscapeDown,
       lockFocus,
       disableFocus,
+      domRef,
       ...props
     } = this.props;
 
@@ -216,7 +217,7 @@ class Focusable extends Component {
       this.updateChildrenOrderNum = 0;
     }
 
-    return <span {...props} />;
+    return <span ref={domRef} {...props} />;
   }
 }
 

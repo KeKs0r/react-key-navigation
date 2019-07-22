@@ -1,4 +1,10 @@
-import React, { useState, useRef, useCallback, forwardRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  forwardRef
+} from "react";
 
 import FocusLock from "react-focus-lock";
 import { storiesOf } from "@storybook/react";
@@ -14,6 +20,14 @@ window.logFocusTree = () => logTree(window.navigationRoot);
 
 const FocusComponent = forwardRef(({ children, style, ...props }, ref) => {
   const [focused, setFocused] = useState();
+  const domRef = useRef();
+  useEffect(() => {
+    focused &&
+      domRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+  }, [focused]);
   return (
     <Focusable
       onFocus={() => {
@@ -23,6 +37,7 @@ const FocusComponent = forwardRef(({ children, style, ...props }, ref) => {
       onBlur={() => setFocused(false)}
       style={{ borderLeft: focused ? "1px solid blue" : "none", ...style }}
       ref={ref}
+      domRef={domRef}
       {...props}
     >
       {children}
@@ -43,6 +58,35 @@ function ListDemo() {
         <FocusComponent>Third</FocusComponent>
         <FocusComponent>Forth</FocusComponent>
         <FocusComponent>Fifth</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
+        <FocusComponent>Six</FocusComponent>
         <FocusComponent>Six</FocusComponent>
       </VerticalList>
     </Navigation>
