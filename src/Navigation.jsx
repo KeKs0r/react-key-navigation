@@ -65,16 +65,18 @@ class Navigation extends Component {
       }
       return;
     }
+    if(!direction){
+      return
+    }
 
     let currentFocusedPath = this.currentFocusedPath;
-    // console.log('currentFocusedPath', currentFocusedPath);
 
     if (!currentFocusedPath || currentFocusedPath.length === 0) {
       currentFocusedPath = this.lastFocusedPath;
 
       if (!currentFocusedPath || currentFocusedPath.length === 0) {
-        //this.focusDefault();
-        return preventDefault();
+        this.focusDefault();
+        // return preventDefault();
       }
     }
 
