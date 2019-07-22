@@ -179,10 +179,16 @@ class Focusable extends Component {
       this.indexInParent = parent.addChild(this);
     }
 
+    // This is set after we unmounted a focused component
     if (this.state.focusTo !== null) {
-      this.context.navigationComponent.focus(
-        this.state.focusTo.getDefaultFocus()
-      );
+      // Only actually focus if the currently focused is the one we removed
+      const { currentFocusedPath } = this.context.navigationComponent;
+      const removed = currentFocusedPath.filter(f => !f.focusableId);
+      if (removed.length > 0) {
+        this.context.navigationComponent.focus(
+          this.state.focusTo.getDefaultFocus()
+        );
+      }
       this.setState({ focusTo: null });
     }
 

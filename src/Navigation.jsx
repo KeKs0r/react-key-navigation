@@ -65,8 +65,8 @@ class Navigation extends Component {
       }
       return;
     }
-    if(!direction){
-      return
+    if (!direction) {
+      return;
     }
 
     let currentFocusedPath = this.currentFocusedPath;
@@ -215,7 +215,10 @@ class Navigation extends Component {
   componentDidMount() {
     window.addEventListener("keydown", this.onKeyDown);
     window.addEventListener("keyup", this.onKeyUp);
-    this.focusDefault();
+    // Only default focus when nothing is focused yet.
+    if (!this.currentFocusedPath) {
+      this.focusDefault();
+    }
   }
 
   componentWillUnmount() {
@@ -237,7 +240,6 @@ class Navigation extends Component {
         ref={element => {
           this.root = element;
           if (element && element.context) {
-            console.log("Setting the root");
             window.navigationRoot = element.context.navigationComponent;
           }
         }}
