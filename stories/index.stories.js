@@ -10,6 +10,8 @@ import Navigation from "../src/Navigation";
 import VerticalList from "../src/VerticalList";
 import { logTree } from "./util";
 
+window.logFocusTree = () => logTree(window.navigationRoot);
+
 const FocusComponent = forwardRef(({ children, style, ...props }, ref) => {
   const [focused, setFocused] = useState();
   return (
@@ -228,9 +230,49 @@ function DisabledElementsDemo() {
   );
 }
 
+function FocusRaceCondition() {
+  const [trigger, setTrigger] = useState(false);
+
+  return (
+    <Navigation>
+      <VerticalList
+        focusId="list"
+        style={{ display: "flex", flexDirection: "column" }}
+      >
+        <FocusComponent focusId="FirstChild">
+          I should not be focused afterwards
+        </FocusComponent>
+        <VerticalList
+          focusId="subList"
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <FocusComponent focusId="firstsublistchild">
+            First Sublist Child
+          </FocusComponent>
+          {!trigger && (
+            <FocusComponent focusId="removeChild" forceFocus>
+              I will go away
+              <button onClick={() => setTrigger(true)}>Click me</button>
+            </FocusComponent>
+          )}
+          <FocusComponent focusId="inBetweenChild">
+            In BetweenChild
+          </FocusComponent>
+          {trigger && (
+            <FocusComponent focusId="addChild" forceFocus>
+              I should be focused now
+            </FocusComponent>
+          )}
+        </VerticalList>
+      </VerticalList>
+    </Navigation>
+  );
+}
+
 storiesOf("Focus", module)
   .add("List Demo", () => <ListDemo />)
   .add("Disabled Demo", () => <DisabledElementsDemo />)
   .add("Nested Demo", () => <NestedDemo />)
   .add("Nested Lock Demo", () => <NestedLockDemo />)
-  .add("Nested Lock Form", () => <NestedLockFormDemo />);
+  .add("Nested Lock Form", () => <NestedLockFormDemo />)
+  .add("Race Condition Focus", () => <FocusRaceCondition />);
