@@ -208,6 +208,7 @@ class Focusable extends Component {
       onChildrenEscapeDown,
       lockFocus,
       disableFocus,
+      forwardedRef,
       ...props
     } = this.props;
 
@@ -216,7 +217,7 @@ class Focusable extends Component {
       this.updateChildrenOrderNum = 0;
     }
 
-    return <span {...props} />;
+    return <span ref={forwardedRef} {...props} />;
   }
 }
 
@@ -240,4 +241,6 @@ Focusable.defaultProps = {
   onChildrenEscapeDown: PropTypes.function
 };
 
-export default Focusable;
+export default React.forwardRef((props, ref) => (
+  <Focusable {...props} forwardedRef={ref} />
+));
