@@ -493,8 +493,17 @@ var Focusable = function (_Component) {
         this.indexInParent = parent.addChild(this);
       }
 
+      // This is set after we unmounted a focused component
       if (this.state.focusTo !== null) {
-        this.context.navigationComponent.focus(this.state.focusTo.getDefaultFocus());
+        // Only actually focus if the currently focused is the one we removed
+        var currentFocusedPath = this.context.navigationComponent.currentFocusedPath;
+
+        var removed = currentFocusedPath.filter(function (f) {
+          return !f.focusableId;
+        });
+        if (removed.length > 0) {
+          this.context.navigationComponent.focus(this.state.focusTo.getDefaultFocus());
+        }
         this.setState({ focusTo: null });
       }
 
@@ -1021,16 +1030,18 @@ var Navigation = function (_Component) {
         }
         return;
       }
+      if (!direction) {
+        return;
+      }
 
       var currentFocusedPath = _this.currentFocusedPath;
-      // console.log('currentFocusedPath', currentFocusedPath);
 
       if (!currentFocusedPath || currentFocusedPath.length === 0) {
         currentFocusedPath = _this.lastFocusedPath;
 
         if (!currentFocusedPath || currentFocusedPath.length === 0) {
-          //this.focusDefault();
-          return preventDefault();
+          _this.focusDefault();
+          // return preventDefault();
         }
       }
 
@@ -1175,7 +1186,10 @@ var Navigation = function (_Component) {
     value: function componentDidMount() {
       window.addEventListener("keydown", this.onKeyDown);
       window.addEventListener("keyup", this.onKeyUp);
-      this.focusDefault();
+      // Only default focus when nothing is focused yet.
+      if (!this.currentFocusedPath) {
+        this.focusDefault();
+      }
     }
   }, {
     key: "componentWillUnmount",
@@ -1204,7 +1218,6 @@ var Navigation = function (_Component) {
           ref: function ref(element) {
             _this2.root = element;
             if (element && element.context) {
-              console.log("Setting the root");
               window.navigationRoot = element.context.navigationComponent;
             }
           },
