@@ -51,7 +51,13 @@ class Focusable extends Component {
   }
 
   getDefaultChild() {
-    if (this.lastFocusChild && this.props.retainLastFocus) {
+    if (
+      this.lastFocusChild &&
+      this.props.retainLastFocus &&
+      // This happens if children get removed
+      // --> Also need a solution if children got exchanged (e.g. route change with same structure)
+      this.children.length - 1 > this.lastFocusChild
+    ) {
       return this.lastFocusChild;
     }
 
