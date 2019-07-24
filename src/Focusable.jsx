@@ -51,7 +51,11 @@ class Focusable extends Component {
   }
 
   getDefaultChild() {
-    if (this.lastFocusChild && this.props.retainLastFocus) {
+    if (
+      this.lastFocusChild &&
+      this.props.retainLastFocus &&
+      this.children.length - 1 > this.lastFocusChild
+    ) {
       return this.lastFocusChild;
     }
 
